@@ -3,6 +3,8 @@
  */
 package entities;
 
+import java.util.List;
+
 /**
  * @author Daniel Gallego Vico
  *
@@ -10,9 +12,10 @@ package entities;
 public class UserProfile implements Comparable<UserProfile> {
 	
 	private int  userId;
-	private String subject;
-	private String language;
-	
+	// list of subjects of interest
+	private List<String> subjects;
+	// list of languages the user is able to understand
+	private List<String> languages;
 	// the distance between this point and the 
 	// center of the canopy it belongs to
 	private double distanceToCenter;
@@ -23,10 +26,10 @@ public class UserProfile implements Comparable<UserProfile> {
 	 * @param subject
 	 * @param language
 	 */
-	public UserProfile(int userId, String subject, String language) {
+	public UserProfile(int userId, List<String> subjects, List<String> languages) {
 		this.userId = userId;
-		this.subject = subject;
-		this.language = language;
+		this.subjects = subjects;
+		this.languages = languages;
 	}
 
 	/**
@@ -40,31 +43,17 @@ public class UserProfile implements Comparable<UserProfile> {
 	/**
 	 * @return the subject
 	 */
-	public String getSubject() {
-		return subject;
-	}
-
-	/**
-	 * @param subject the subject to set
-	 */
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public List<String> getSubjects() {
+		return subjects;
 	}
 
 	/**
 	 * @return the language
 	 */
-	public String getLanguage() {
-		return language;
+	public List<String> getLanguages() {
+		return languages;
 	}
 
-	/**
-	 * @param language the language to set
-	 */
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	
 	/**
 	 * @return the distanceToCenter
 	 */

@@ -54,10 +54,34 @@ public class SocialContextManager {
 		
 		// TODO extract users from databse
 		
-		UserProfile u1 = new UserProfile(1, "bilogy", "english");
-		UserProfile u2 = new UserProfile(2, "bilogia", "spanish");
-		UserProfile u3 = new UserProfile(3, "nanotechnology", "english");
-		UserProfile u4 = new UserProfile(4, "nanotechnology", "spanish");
+		// u1
+		List<String> subjects1 = new ArrayList<String>();
+		subjects1.add("biology");
+		List<String> languages1 = new ArrayList<String>();
+		languages1.add("english");
+		UserProfile u1 = new UserProfile(1, subjects1, languages1);
+		
+		//u2
+		List<String> subjects2 = new ArrayList<String>();
+		subjects2.add("bilogia");
+		List<String> languages2 = new ArrayList<String>();
+		languages2.add("spanish");
+		UserProfile u2 = new UserProfile(2, subjects2, languages2);
+		
+		//u3
+		List<String> subjects3 = new ArrayList<String>();
+		subjects3.add("nanotechnology");
+		List<String> languages3 = new ArrayList<String>();
+		languages3.add("english");
+		UserProfile u3 = new UserProfile(3, subjects3, languages3);
+		
+		//u4
+		List<String> subjects4 = new ArrayList<String>();
+		subjects4.add("nanotechnology");
+		List<String> languages4 = new ArrayList<String>();
+		languages4.add("spanish");
+		UserProfile u4 = new UserProfile(4, subjects4, languages4);
+		
 		
 		users.add(u1);
 		users.add(u3);
