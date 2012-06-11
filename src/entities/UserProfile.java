@@ -1,5 +1,5 @@
 /**
- * 
+ * Define a user profile in ViSH 
  */
 package entities;
 
@@ -11,13 +11,25 @@ import java.util.List;
  */
 public class UserProfile implements Comparable<UserProfile> {
 	
+	/********** ATTRIBUTTES **********/
 	private int  userId;
 	// list of subjects of interest
 	private List<String> subjects;
 	// list of languages the user is able to understand
 	private List<String> languages;
+	// the context related to the user in his daily activity
+	private String role;
+	// target level described by the min and max age the user is focused on
+	private int minTargetLevel;
+	private int maxTargetLevel;
+	
+	private String organization;
+	private String country;
+	private String city;
+	
+	
 	// the distance between this point and the 
-	// center of the canopy it belongs to
+	// center of the canopy the user belongs to
 	private double distanceToCenter;
 	
 	/**

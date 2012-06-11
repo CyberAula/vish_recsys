@@ -44,6 +44,18 @@ public class SocialContextManager {
 	}
 	
 	/**
+	 * Identifies the cluster a user belongs to
+	 * 
+	 * @param user
+	 * @return the cluster
+	 */
+	public Canopy discoverUserCluster(UserProfile user) {
+		Canopy userCanopy = new Canopy();
+		
+		return userCanopy;
+	}
+	
+	/**
 	 * Extract from the database the source points representing the
 	 * users profiles to generate the social clusters
 	 * 

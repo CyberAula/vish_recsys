@@ -21,6 +21,14 @@ public class Canopy {
 	// points that are into the canopy
 	private List<UserProfile> users = new ArrayList<UserProfile>();
 	
+	
+	/**
+	 * Empty contructor
+	 */
+	public Canopy() {
+		
+	}
+	
 	/**
 	 * Constructor
 	 * 
