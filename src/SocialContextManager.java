@@ -1,14 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
-import clustering.Canopy;
-import clustering.CanopyClusterer;
-
-
-import distance.ViSHDistance;
-import entities.UserProfile;
-
-
 /**
  * Class in charge of generating the social clusters in which the
  * users are gathered by similarity.
@@ -16,6 +5,18 @@ import entities.UserProfile;
  * The clustering process is based on Canopy algorithm.
  * 
  */
+
+import java.util.Iterator;
+import java.util.List;
+
+import clustering.Canopy;
+import clustering.CanopyClusterer;
+
+
+import database.RecSysDatabaseDriver;
+import database.VishDatabaseDriver;
+import distance.ViSHDistance;
+import entities.UserProfile;
 
 /**
  * @author Daniel Gallego Vico
@@ -27,80 +28,84 @@ public class SocialContextManager {
 	private final double T1 = 8;
 	private final double T2 = 4;
 	
+	// Social clusters
+	private List<Canopy> clusters;
+	
+	
 	/**
-	 * Method in charge of executing the user profile clustering process
+	 * Executes the user profile clustering process
 	 */
 	public void doUserProfileClustering() {
-		CanopyClusterer clusterer = new CanopyClusterer(new ViSHDistance(), T1, T2);
-		List<Canopy> canopies = clusterer.createCanopies(getSourcePoints());
+		// connecting to the database ViSH database
+		VishDatabaseDriver vishDB = new VishDatabaseDriver();
+		vishDB.connect();
+		// configure the Canopy clusterer
+		ViSHDistance measure = new ViSHDistance();
+		CanopyClusterer clusterer = new CanopyClusterer(measure, T1, T2);
+		// create the social clusters based on the user profiles stored in the ViSH database
+		List <UserProfile> source = vishDB.getUserProfiles();
+		clusters = clusterer.createCanopies(source);
+		// close the connection with the ViSH database
+		vishDB.close();
+		
+		// connecting to the database RecSys database
+		RecSysDatabaseDriver recsysDB = new RecSysDatabaseDriver();
+		recsysDB.connect();
+		// upgrade the tables related to clusters, users and learning objects
+		recsysDB.upgradeTables();
+		// save the social clusters in the RecSys database
+		Iterator<Canopy> iter = clusters.iterator();
+		while(iter.hasNext()) {
+			Canopy c = iter.next();
+			recsysDB.createCluster(c);
+		}
+		// close the connection with the RecSys database
+		recsysDB.close();
 	}
 	
 	/**
-	 * Assign the set of Learning Objects (LO) related to the users
+	 * Assigns the set of Learning Objects (LO) related to the users
 	 * belonging to that cluster
 	 */
 	public void doLOAssignment(Canopy canopy) {
+		// connecting to the database
+		VishDatabaseDriver db = new VishDatabaseDriver();
+		db.connect();
 		
+		// close the database connection
+		db.close();
 	}
 	
 	/**
-	 * Identifies the cluster a user belongs to
+	 * Identifies the closest cluster to the target user
 	 * 
-	 * @param user
-	 * @return the cluster
+	 * @param targetUser
+	 * @return the id of the closest cluster
 	 */
-	public Canopy discoverUserCluster(UserProfile user) {
-		Canopy userCanopy = new Canopy();
+	public int discoverUserCluster(UserProfile targetUser) {
+		int closestCanopyId = -1;
 		
-		return userCanopy;
-	}
-	
-	/**
-	 * Extract from the database the source points representing the
-	 * users profiles to generate the social clusters
-	 * 
-	 * @return a list of users profiles
-	 */
-	private List<UserProfile> getSourcePoints() {
-		List<UserProfile> users = new ArrayList<UserProfile>();
-		
-		// TODO extract users from databse
-		
-		// u1
-		List<String> subjects1 = new ArrayList<String>();
-		subjects1.add("biology");
-		List<String> languages1 = new ArrayList<String>();
-		languages1.add("english");
-		UserProfile u1 = new UserProfile(1, subjects1, languages1);
-		
-		//u2
-		List<String> subjects2 = new ArrayList<String>();
-		subjects2.add("bilogia");
-		List<String> languages2 = new ArrayList<String>();
-		languages2.add("spanish");
-		UserProfile u2 = new UserProfile(2, subjects2, languages2);
-		
-		//u3
-		List<String> subjects3 = new ArrayList<String>();
-		subjects3.add("nanotechnology");
-		List<String> languages3 = new ArrayList<String>();
-		languages3.add("english");
-		UserProfile u3 = new UserProfile(3, subjects3, languages3);
-		
-		//u4
-		List<String> subjects4 = new ArrayList<String>();
-		subjects4.add("nanotechnology");
-		List<String> languages4 = new ArrayList<String>();
-		languages4.add("spanish");
-		UserProfile u4 = new UserProfile(4, subjects4, languages4);
-		
-		
-		users.add(u1);
-		users.add(u3);
-		users.add(u2);
-		users.add(u4);
-		
-		return users;
+		// connecting to the RecSys database
+		RecSysDatabaseDriver db = new RecSysDatabaseDriver();
+		db.connect();
+		// retrieve the clusters
+		List<Canopy> clusters = db.getAllClusters();
+		ViSHDistance measure = new ViSHDistance();
+		// iterate over all the clusters to find the closest to the target user
+		Iterator<Canopy> iter = clusters.iterator();
+		double minDist = 1000;
+		while(iter.hasNext()) {
+			Canopy c = iter.next();
+			double distance = measure.calculateDistance(c.getCenter(), targetUser);
+			if(distance < minDist) {
+				distance = minDist;
+				closestCanopyId = c.getCanopyId();
+			}
+		}
+		// close the database connection
+		db.close();
+				
+		return closestCanopyId;
 	}
 	
 

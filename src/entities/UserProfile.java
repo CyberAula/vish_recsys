@@ -17,12 +17,12 @@ public class UserProfile implements Comparable<UserProfile> {
 	private List<String> subjects;
 	// list of languages the user is able to understand
 	private List<String> languages;
-	// the context related to the user in his daily activity
-	private String role;
 	// target level described by the min and max age the user is focused on
 	private int minTargetLevel;
 	private int maxTargetLevel;
-	
+	// the context related to the user in his daily activity
+	private String role;
+	// more personal information
 	private String organization;
 	private String country;
 	private String city;
@@ -35,13 +35,18 @@ public class UserProfile implements Comparable<UserProfile> {
 	/**
 	 * Constructor
 	 * 
-	 * @param subject
-	 * @param language
+	 * @param userId
+	 * @param subjects
+	 * @param languages
+	 * @param minAge
+	 * @param maxAge
 	 */
-	public UserProfile(int userId, List<String> subjects, List<String> languages) {
+	public UserProfile(int userId, List<String> subjects, List<String> languages, int minAge, int maxAge) {
 		this.userId = userId;
 		this.subjects = subjects;
 		this.languages = languages;
+		this.minTargetLevel = minAge;
+		this.maxTargetLevel = maxAge;
 	}
 
 	/**
