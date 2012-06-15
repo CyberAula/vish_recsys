@@ -1,3 +1,4 @@
+package manager;
 /**
  * Class in charge of generating the social clusters in which the
  * users are gathered by similarity.
@@ -8,6 +9,8 @@
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import clustering.Canopy;
 import clustering.CanopyClusterer;
@@ -31,11 +34,14 @@ public class SocialContextManager {
 	// Social clusters
 	private List<Canopy> clusters;
 	
+	private Logger log = Logger.getLogger("SocialContextManagerLog");
 	
 	/**
 	 * Executes the user profile clustering process
 	 */
 	public void doUserProfileClustering() {
+		log.log(Level.INFO, "User profile clustering started");
+		
 		// connecting to the database ViSH database
 		VishDatabaseDriver vishDB = new VishDatabaseDriver();
 		vishDB.connect();
@@ -61,6 +67,8 @@ public class SocialContextManager {
 		}
 		// close the connection with the RecSys database
 		recsysDB.close();
+		
+		log.log(Level.INFO, "User profile clustering finished");
 	}
 	
 	/**
@@ -107,11 +115,5 @@ public class SocialContextManager {
 				
 		return closestCanopyId;
 	}
-	
 
-	public static void main(String[] args) {
-		SocialContextManager s = new SocialContextManager();
-		s.doUserProfileClustering();
-		
-	}
 }

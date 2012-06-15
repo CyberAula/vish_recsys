@@ -122,13 +122,31 @@ public class CanopyClusterer {
 	     * Put all points that are within distance threshold T1 into a canopy. 
 	     * Remove from the list all points that are within distance threshold T2. 
 	     * Repeat until the list is empty.
+	     * 
+	     * --> MODIFICATION: Taking into account that could be grey users without 
+	     * user profile attributes information, they will be gathered in a special 
+	     * canopy called greyUsersCanopy
 	     */
 		int nextCanopyId = 0;
+		Canopy greyUsersCanopy = new Canopy();
 		while (!points.isEmpty()) {
 			Iterator<UserProfile> ptIter = points.iterator();
 			UserProfile p1 = (UserProfile)ptIter.next();
 			ptIter.remove();
 			
+			// condition for grey users
+			if (p1.getSubjects().isEmpty()) {
+				// if it is the first user in this canopy, it is set as the center
+				if(greyUsersCanopy.getCenter() == null ) {
+					greyUsersCanopy = new Canopy(p1, nextCanopyId++);
+				}
+				else {
+					greyUsersCanopy.addUser(p1);
+				}
+				continue;
+			}
+			
+			// the point picked is the center of the new canopy 
 			Canopy canopy = new Canopy(p1, nextCanopyId++);
 			canopies.add(canopy);
 			
@@ -148,6 +166,10 @@ public class CanopyClusterer {
 			// sort the users into the canopy
 			canopy.sortUsersByDistance();
 		}
+		// sort the grey users canopy and add it to the canopies list
+		greyUsersCanopy.sortUsersByDistance();
+		canopies.add(greyUsersCanopy);
+		
 		return canopies;
 	}
 	

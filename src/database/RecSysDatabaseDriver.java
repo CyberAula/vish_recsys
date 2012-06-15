@@ -48,6 +48,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	private final String TABLE_CLUSTERS = "clusters";
 	private final String TABLE_CLUSTERS_ID = "id";
 	private final String TABLE_CLUSTERS_CENTER_ID = "centerId";
+	private final String TABLE_CLUSTERS_SIZE = "size";
 	 
 	// LEARNING_OBJECTS table
 	// id (integer), clusterId (integer), type (integer), position (integer)
@@ -104,24 +105,28 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 			
 			dbLogger.log(Level.INFO, "Droping the old version and creating the new table: " + TABLE_USERS);
 			statement.execute("DROP TABLE IF EXISTS " + TABLE_USERS);
-			statement.execute("CREATE TABLE " + TABLE_USERS + " " +
-									TABLE_USERS_ID + " integer, " +
-									TABLE_USERS_CLUSTER_ID + " integer, " +
-									TABLE_USERS_POSITION + " integer");
+			String createUsersTableCmd = "CREATE TABLE " + TABLE_USERS + " (" +
+													TABLE_USERS_ID + " integer, " +
+													TABLE_USERS_CLUSTER_ID + " integer, " +
+													TABLE_USERS_POSITION + " integer)";
+			statement.execute(createUsersTableCmd);
 			
 			dbLogger.log(Level.INFO, "Droping the old version and creating the new table: " + TABLE_CLUSTERS);
 			statement.execute("DROP TABLE IF EXISTS " + TABLE_CLUSTERS);
-			statement.execute("CREATE TABLE " + TABLE_CLUSTERS + " " + 
-									TABLE_CLUSTERS_ID + " integer, " +
-									TABLE_CLUSTERS_CENTER_ID + " integer");
+			String createClustersTableCmd = "CREATE TABLE " + TABLE_CLUSTERS + " (" + 
+													TABLE_CLUSTERS_ID + " integer, " +
+													TABLE_CLUSTERS_CENTER_ID + " integer, " +
+													TABLE_CLUSTERS_SIZE + " integer)";
+			statement.execute(createClustersTableCmd);
 			
 			dbLogger.log(Level.INFO, "Droping the old version and creating the new table: " + TABLE_LO);
 			statement.execute("DROP TABLE IF EXISTS " + TABLE_LO);
-			statement.execute("CREATE TABLE " + TABLE_LO + " " + 
-									TABLE_LO_ID + " integer, " +
-									TABLE_LO_CLUSTER_ID + " integer, " +
-									TABLE_LO_TYPE + " integer, " +
-									TABLE_LO_POSITION + " integer");
+			String createLOTableCmd = "CREATE TABLE " + TABLE_LO + " (" + 
+													TABLE_LO_ID + " integer, " +
+													TABLE_LO_CLUSTER_ID + " integer, " +
+													TABLE_LO_TYPE + " integer, " +
+													TABLE_LO_POSITION + " integer)";
+			statement.execute(createLOTableCmd);
 		}
 		catch(SQLException e) {
 			dbLogger.log(Level.WARNING, "Error while upgrading the tables");
@@ -153,7 +158,9 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 			// create the cluster in the database and the users related to it
 			else {
 				statement.executeUpdate("INSERT INTO " + TABLE_CLUSTERS + " VALUES (" + 
-										canopy.getCanopyId() + ", " + canopy.getCenter().getId() + ")");
+										canopy.getCanopyId() + ", " +
+										canopy.getCenter().getId() + ", " + 
+										(canopy.getUsers().size()+1) +  ")");
 				// the first user in the cluster is the center
 				int position = 1;
 				UserProfile center = canopy.getCenter();

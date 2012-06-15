@@ -46,6 +46,14 @@ public class Canopy {
 	public UserProfile getCenter() {
 		return center;
 	}
+	
+	/**
+	 * 
+	 * @param user
+	 */
+	public void setCenter(UserProfile user) {
+		this.center = user;
+	}
 
 	/**
 	 * @return the canopyId

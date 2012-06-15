@@ -63,7 +63,7 @@ public class UserProfile implements Comparable<UserProfile> {
 	public List<String> getSubjects() {
 		return subjects;
 	}
-
+	
 	/**
 	 * @return the language
 	 */

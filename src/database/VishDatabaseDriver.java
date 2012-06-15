@@ -89,21 +89,35 @@ public class VishDatabaseDriver {
 	 * READ
 	 * 
 	 * Extract from the database the source points 
-	 * representing the users profiles
+	 * representing the users profiles.
+	 * 
+	 * The users are ordered by their followers due to
+	 * select as cluster centers first the "hub users".
+	 * 
 	 * 
 	 * @return a list of user profiles
 	 */
 	public List<UserProfile> getUserProfiles() {
-		// query that returns one row for every user as follows:
+		// query that returns one row for every user (ordered by followers) as follows:
 		// id (integer) | language (String) | array_agg (Strings[] subjects) | age_min (integer) | age_max (integer)
-		String selectQuery = "SELECT users.id,users.language,array_agg(tags.name),activity_objects.age_min,activity_objects.age_max " +
+		String selectQuery = "SELECT users.id,users.language,array_agg(tags.name),activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count " +
 				"FROM actors INNER JOIN users ON users.actor_id=actors.id INNER JOIN " +
 				"profiles ON profiles.actor_id=actors.id INNER JOIN activity_objects ON " +
 				"activity_objects.id=actors.activity_object_id LEFT OUTER JOIN taggings " +
 				"ON taggings.taggable_type='ActivityObject' AND " +
-				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON " + 
+				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON " +
 				"tags.id=taggings.tag_id WHERE actors.subject_type='User' GROUP BY " +
-				"users.id,users.language,activity_objects.age_min,activity_objects.age_max"; 
+				"users.id,users.language,activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count " +
+				"ORDER BY activity_objects.follower_count DESC";
+		
+//		String selectQuery = "SELECT users.id,users.language,array_agg(tags.name),activity_objects.age_min,activity_objects.age_max " +
+//				"FROM actors INNER JOIN users ON users.actor_id=actors.id INNER JOIN " +
+//				"profiles ON profiles.actor_id=actors.id INNER JOIN activity_objects ON " +
+//				"activity_objects.id=actors.activity_object_id LEFT OUTER JOIN taggings " +
+//				"ON taggings.taggable_type='ActivityObject' AND " +
+//				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON " + 
+//				"tags.id=taggings.tag_id WHERE actors.subject_type='User' GROUP BY " +
+//				"users.id,users.language,activity_objects.age_min,activity_objects.age_max"; 
 				
 		List<UserProfile> users = new ArrayList<UserProfile>();
 		try {
