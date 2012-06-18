@@ -131,7 +131,7 @@ public class CanopyClusterer {
 		Canopy greyUsersCanopy = new Canopy();
 		while (!points.isEmpty()) {
 			Iterator<UserProfile> ptIter = points.iterator();
-			UserProfile p1 = (UserProfile)ptIter.next();
+			UserProfile p1 = ptIter.next();
 			ptIter.remove();
 			
 			// condition for grey users

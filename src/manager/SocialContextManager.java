@@ -7,6 +7,7 @@ package manager;
  * 
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import clustering.CanopyClusterer;
 import database.RecSysDatabaseDriver;
 import database.VishDatabaseDriver;
 import distance.ViSHDistance;
+import entities.LearningObject;
 import entities.UserProfile;
 
 /**
@@ -72,16 +74,50 @@ public class SocialContextManager {
 	}
 	
 	/**
-	 * Assigns the set of Learning Objects (LO) related to the users
-	 * belonging to that cluster
+	 * Assigns the Learning Objects (LO) related to every cluster
 	 */
-	public void doLOAssignment(Canopy canopy) {
-		// connecting to the database
-		VishDatabaseDriver db = new VishDatabaseDriver();
-		db.connect();
+	public void doLOAssignment() {
+		// connecting to the ViSH database
+		VishDatabaseDriver vishDb = new VishDatabaseDriver();
+		vishDb.connect();
+		// connecting to the RecSys database
+		RecSysDatabaseDriver recsysDb = new RecSysDatabaseDriver();
+		recsysDb.connect();
 		
-		// close the database connection
-		db.close();
+		// iterate over all the clusters
+		List<Canopy> clusters = recsysDb.getAllClusters();
+		Iterator<Canopy> iter = clusters.iterator();
+		while(iter.hasNext()) {
+			// the list of LOs related to the cluster
+			List<LearningObject> clusterLOs = new ArrayList<LearningObject>();
+			Canopy c = iter.next();
+			// get the users into the cluster
+			List<UserProfile> users = recsysDb.getUsersIntoCluster(c.getCanopyId());
+			
+			// Iterate over all the users into a cluster to get their LOs related
+			Iterator<UserProfile> usersIte = users.iterator();
+			while(usersIte.hasNext()) {
+				UserProfile u = usersIte.next();
+				// add the LOs to the list
+				clusterLOs.addAll(vishDb.getLOfromUser(u));				
+			}
+			
+			// TODO sort the LOs into the cluster by their distance to the cluster center
+			// currently they are sorted taking into account that user's order
+
+			
+			// iterate over all the LOs to add them to the RecSys database
+			Iterator<LearningObject> LOiter = clusterLOs.iterator();
+			int position = 0;
+			while(LOiter.hasNext()) {
+				LearningObject lo = LOiter.next();
+				recsysDb.createLearningObject(lo, position++, c);
+			}
+		}
+		
+		// close the database connections
+		vishDb.close();
+		recsysDb.close();
 	}
 	
 	/**

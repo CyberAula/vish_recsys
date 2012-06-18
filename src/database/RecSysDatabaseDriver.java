@@ -3,12 +3,14 @@
  */
 package database;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -124,7 +126,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 			String createLOTableCmd = "CREATE TABLE " + TABLE_LO + " (" + 
 													TABLE_LO_ID + " integer, " +
 													TABLE_LO_CLUSTER_ID + " integer, " +
-													TABLE_LO_TYPE + " integer, " +
+													TABLE_LO_TYPE + " varchar(255), " +
 													TABLE_LO_POSITION + " integer)";
 			statement.execute(createLOTableCmd);
 		}
@@ -146,6 +148,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	 * Manage the creation of clusters and the users 
 	 * related to them in the database 
 	 * 
+	 * @param canopy
 	 */
 	public void createCluster (Canopy canopy) {
 		try {
@@ -200,7 +203,20 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	 */
 	public List<Canopy> getAllClusters() {
 		List<Canopy> clusters = new ArrayList<Canopy>();
-		
+		String query = "SELECT * FROM " + TABLE_CLUSTERS;
+		try {
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()) {
+				// we only need the id
+				int id = result.getInt(TABLE_CLUSTERS_ID);
+				Canopy c = new Canopy(id);
+				clusters.add(c);
+			}
+		}
+		catch (SQLException e) {
+			dbLogger.log(Level.WARNING, "Error while querying the table " + TABLE_CLUSTERS);
+			e.printStackTrace();
+		}
 		
 		return clusters;
 	}
@@ -226,20 +242,63 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	
 	/*
 	 ***************************************************************************
-	 * LEARNING OBJECTS MANAGEMENT
+	 * USERS MANAGEMENT
 	 ***************************************************************************
 	 */
 	
 	/**
 	 * READ
 	 * 
-	 * @param userId
-	 * @return
+	 * @param clusterId
+	 * @return the list of users into the cluster
 	 */
-	public List<LearningObject> getLOUsedByUser(int userId) {
-		List<LearningObject> lObjects = new ArrayList<LearningObject>();
-		
-		return lObjects;
+	public List<UserProfile> getUsersIntoCluster(int clusterId) {
+		List<UserProfile> users = new ArrayList<UserProfile>();
+		try {
+			String usersIntoClusterQuery = "SELECT * FROM " + TABLE_USERS +  " WHERE " + TABLE_USERS_CLUSTER_ID + "=" + clusterId;
+			ResultSet result =  statement.executeQuery(usersIntoClusterQuery);
+			while(result.next()) {
+				int userId = result.getInt(TABLE_USERS_ID);
+				UserProfile u = new UserProfile(userId);
+				users.add(u);
+			}
+		}
+		catch (SQLException e) {
+			dbLogger.log(Level.WARNING, "Error while retrieving the users into a cluster");
+			e.printStackTrace();
+		}
+		return users;
 	}
-
+	
+	
+	/*
+	 ***************************************************************************
+	 * LEARNING OBJECTS MANAGEMENT
+	 ***************************************************************************
+	 */
+	
+	/**
+	 * CREATE
+	 * 
+	 * Manage the creation of learning objects in the database
+	 * 
+	 * @param lo
+	 * @param position
+	 * @param cluster
+	 */
+	public void createLearningObject(LearningObject lo, int position, Canopy cluster) {
+		try {
+			statement.executeUpdate("INSERT INTO " + TABLE_LO + " VALUES (" + 
+									lo.getId() + ", " + 
+									cluster.getCanopyId() + ", " +
+									"'" + lo.getType() + "', " +
+									position + ")");
+		}
+		catch (SQLException e) {
+			dbLogger.log(Level.WARNING, "Error while creating a new learning object");
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

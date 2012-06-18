@@ -32,6 +32,15 @@ public class Canopy {
 	/**
 	 * Constructor
 	 * 
+	 * @param canopyId
+	 */
+	public Canopy(int canopyId) {
+		this.canopyId = canopyId;
+	}
+	
+	/**
+	 * Constructor
+	 * 
 	 * @param center
 	 * @param canopyId
 	 */

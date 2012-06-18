@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.rmi.CORBA.Tie;
+
+import org.restlet.security.User;
+
 import clustering.Canopy;
 
 import entities.LearningObject;
@@ -100,25 +104,16 @@ public class VishDatabaseDriver {
 	public List<UserProfile> getUserProfiles() {
 		// query that returns one row for every user (ordered by followers) as follows:
 		// id (integer) | language (String) | array_agg (Strings[] subjects) | age_min (integer) | age_max (integer)
-		String selectQuery = "SELECT users.id,users.language,array_agg(tags.name),activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count " +
+		String selectQuery = "SELECT actors.id,users.language,array_agg(tags.name),activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count " +
 				"FROM actors INNER JOIN users ON users.actor_id=actors.id INNER JOIN " +
 				"profiles ON profiles.actor_id=actors.id INNER JOIN activity_objects ON " +
 				"activity_objects.id=actors.activity_object_id LEFT OUTER JOIN taggings " +
 				"ON taggings.taggable_type='ActivityObject' AND " +
 				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON " +
 				"tags.id=taggings.tag_id WHERE actors.subject_type='User' GROUP BY " +
-				"users.id,users.language,activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count " +
+				"actors.id,users.language,activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count " +
 				"ORDER BY activity_objects.follower_count DESC";
 		
-//		String selectQuery = "SELECT users.id,users.language,array_agg(tags.name),activity_objects.age_min,activity_objects.age_max " +
-//				"FROM actors INNER JOIN users ON users.actor_id=actors.id INNER JOIN " +
-//				"profiles ON profiles.actor_id=actors.id INNER JOIN activity_objects ON " +
-//				"activity_objects.id=actors.activity_object_id LEFT OUTER JOIN taggings " +
-//				"ON taggings.taggable_type='ActivityObject' AND " +
-//				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON " + 
-//				"tags.id=taggings.tag_id WHERE actors.subject_type='User' GROUP BY " +
-//				"users.id,users.language,activity_objects.age_min,activity_objects.age_max"; 
-				
 		List<UserProfile> users = new ArrayList<UserProfile>();
 		try {
 			ResultSet result = statement.executeQuery(selectQuery);
@@ -126,7 +121,7 @@ public class VishDatabaseDriver {
 				// user id
 				int id = result.getInt("id");
 				
-				// might be multiple languages (TODO currently only one)
+				// TODO might be multiple languages (currently only one)
 				String language = result.getString("language");
 				List <String> languagesList = new ArrayList<String>();
 				if(language != null) languagesList.add(language);
@@ -147,10 +142,77 @@ public class VishDatabaseDriver {
 			}
 		}
 		catch (SQLException e) {
-			dbLogger.log(Level.WARNING, "Error while fetching user profiles");
+			dbLogger.log(Level.WARNING, "Error while fetching user profiles from " + DB_NAME + " database");
 			e.printStackTrace();
 		}
 		return users;
+	}
+	
+	/*
+	 ***************************************************************************
+	 * LEARNING OBJECTS MANAGEMENT
+	 ***************************************************************************
+	 */
+	
+	/**
+	 * Extract from the database the learning objects
+	 * related to the user provided 
+	 * 
+	 * @param userId
+	 * @return the list of LOs corresponding to the userId
+	 */
+	public List<LearningObject> getLOfromUser(UserProfile user) {
+		List<LearningObject> LOs = new ArrayList<LearningObject>();
+		// query that returns one row for every LO related to the user provided as follows:
+		//  id (integer) | object_type (String) | array_agg (Strings[] subjects) | visit_count (integer)
+		String selectQuery = "SELECT activity_objects.id,activity_objects.object_type,array_agg(tags.name),activity_objects.visit_count " +
+				"FROM activity_objects INNER JOIN activity_object_activities ON " +
+				"activity_object_activities.activity_object_id=activity_objects.id " +
+				"INNER JOIN activities ON " +
+				"activities.id=activity_object_activities.activity_id LEFT OUTER JOIN " +
+				"taggings ON taggings.taggable_type='ActivityObject' AND " +
+				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON " +
+				"tags.id=taggings.tag_id WHERE activity_objects.object_type<>'Actor' " +
+				"AND activities.author_id="+ user.getId() + " GROUP BY " +
+				"activity_objects.id,activity_objects.object_type";
+		try {
+			ResultSet result = statement.executeQuery(selectQuery);
+			while(result.next()) {
+				// LO id
+				int id = result.getInt("id");
+				
+				// LO type
+				String type = result.getString("object_type");
+				
+				// TODO might be multiple languages (currently only one)
+				//String language = result.getString("language");
+				List <String> languagesList = new ArrayList<String>();
+				//if(language != null) languagesList.add(language);
+				
+				// might be multiple subjects
+				List <String> subjectsList = new ArrayList<String>();
+				Array sqlArray = result.getArray("array_agg");
+				String[] textArray = (String[])sqlArray.getArray();
+				if(textArray[0] != null) subjectsList = new ArrayList<String>(Arrays.asList(textArray));
+				
+				// target students' age 
+				int minAge = 4; //result.getInt("age_min");
+				int maxAge = 30; //result.getInt("age_max");
+				
+				// number of times the LO has been used by ViSH users
+				int timesUsed = result.getInt("visit_count");
+				
+				// add the LO to the list
+				LearningObject lo = new LearningObject(id, type, subjectsList, languagesList, minAge, maxAge, timesUsed);
+				LOs.add(lo);
+			}
+		}
+		catch (SQLException e) {
+			dbLogger.log(Level.WARNING, "Error while fetching learning objects from " + DB_NAME + " database");
+			e.printStackTrace();
+		}
+		
+		return LOs;
 	}
 	
 }

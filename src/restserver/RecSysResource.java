@@ -18,7 +18,10 @@ public class RecSysResource extends ServerResource {
 	@Get
 	public String initSocialContextManager() {
 		SocialContextManager scm = new SocialContextManager();
+		// First the user profile clustering
 		scm.doUserProfileClustering();
+		// Then, the learning objects assignment
+		scm.doLOAssignment();
 		
 		return "ViSH RecSys launched!";
 	}

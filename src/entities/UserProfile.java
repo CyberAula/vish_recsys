@@ -36,6 +36,15 @@ public class UserProfile implements Comparable<UserProfile> {
 	 * Constructor
 	 * 
 	 * @param userId
+	 */
+	public UserProfile(int userId) {
+		this.userId = userId;
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param userId
 	 * @param subjects
 	 * @param languages
 	 * @param minAge
