@@ -77,6 +77,8 @@ public class SocialContextManager {
 	 * Assigns the Learning Objects (LO) related to every cluster
 	 */
 	public void doLOAssignment() {
+		log.log(Level.INFO, "Learning Object Assignment started");
+		
 		// connecting to the ViSH database
 		VishDatabaseDriver vishDb = new VishDatabaseDriver();
 		vishDb.connect();
@@ -118,6 +120,8 @@ public class SocialContextManager {
 		// close the database connections
 		vishDb.close();
 		recsysDb.close();
+		
+		log.log(Level.INFO, "Learning Object Assignment finished");
 	}
 	
 	/**
@@ -127,6 +131,8 @@ public class SocialContextManager {
 	 * @return the id of the closest cluster
 	 */
 	public int discoverUserCluster(UserProfile targetUser) {
+		log.log(Level.INFO, "Discovering the closest cluster to the user with id: " + targetUser.getId());
+		
 		int closestCanopyId = -1;
 		
 		// connecting to the RecSys database

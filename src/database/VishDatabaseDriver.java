@@ -6,16 +6,9 @@ package database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.rmi.CORBA.Tie;
-
-import org.restlet.security.User;
-
-import clustering.Canopy;
 
 import entities.LearningObject;
 import entities.UserProfile;

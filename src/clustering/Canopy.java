@@ -91,7 +91,6 @@ public class Canopy {
 	 */
 	public void sortUsersByDistance() {
 		Collections.sort(users);
-		int i = 0;
 	}
 	
 }
