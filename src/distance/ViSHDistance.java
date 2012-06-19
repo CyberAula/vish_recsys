@@ -17,8 +17,8 @@ import entities.UserProfile;
 public class ViSHDistance {
 	
 	// Weight for subject
-	private double wSubject = 0.5;
-	private double wLanguage = 0.5;
+	private double wSubject = 0.8;
+	private double wLanguage = 0.2;
 	
 	/**
 	 * Constructor
