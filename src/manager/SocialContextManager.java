@@ -30,8 +30,8 @@ import entities.UserProfile;
 public class SocialContextManager {
 
 	// Canopy thresholds T1 > T2
-	private final double T1 = 8;
-	private final double T2 = 4;
+	private final double T1 = 3;
+	private final double T2 = 1;
 	
 	// Social clusters
 	private List<Canopy> clusters;
@@ -156,6 +156,37 @@ public class SocialContextManager {
 		db.close();
 				
 		return closestCanopyId;
+	}
+	
+	/**
+	 * 
+	 * @return detailed information about the clusters generated
+	 */
+	public String getClustersInformation() {
+		String info = "\n";
+		
+		// connecting to the RecSys database
+		RecSysDatabaseDriver recsysDb = new RecSysDatabaseDriver();
+		recsysDb.connect();
+		
+		// Information about number of clusters
+		List <Canopy> clusters = recsysDb.getAllClusters();
+		int numberOfClusters = clusters.size();
+		info = info + "Number of social clusters created: " + numberOfClusters + "\n";
+		
+		// Information about users in every cluster
+		Iterator<Canopy> clusterIter = clusters.iterator();
+		while(clusterIter.hasNext()) {
+			Canopy cluster = clusterIter.next();
+			List<UserProfile> usersIntoCluster = recsysDb.getUsersIntoCluster(cluster.getCanopyId());
+			info = info + "Cluster " + cluster.getCanopyId() + " : " + usersIntoCluster.size() + " users\n";
+		}
+		
+		// close the database connections
+		recsysDb.close();
+		
+		info = info + "\n";
+		return info;
 	}
 
 }

@@ -197,7 +197,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	/**
 	 * READ (all)
 	 * 
-	 * @return
+	 * @return a list of clusters identified only by their id
 	 */
 	public List<Canopy> getAllClusters() {
 		List<Canopy> clusters = new ArrayList<Canopy>();

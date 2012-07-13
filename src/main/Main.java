@@ -22,8 +22,7 @@ public class Main {
 	    component.getServers().add(Protocol.HTTP, 8182);  
 	  
 	    // Attach the sample application.  
-	    component.getDefaultHost().attach("/recsys",  
-	            new RecSysApplication());  
+	    component.getDefaultHost().attach("/recsys", new RecSysApplication());  
 	  
 	    // Start the component.  
 	    component.start();  

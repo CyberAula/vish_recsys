@@ -23,6 +23,9 @@ public class RecSysResource extends ServerResource {
 		// Then, the learning objects assignment
 		scm.doLOAssignment();
 		
+		// Print information about clusters generated
+		System.out.println(scm.getClustersInformation());
+		
 		return "ViSH RecSys launched!";
 	}
 }
