@@ -161,13 +161,14 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 				statement.executeUpdate("INSERT INTO " + TABLE_CLUSTERS + " VALUES (" + 
 										canopy.getCanopyId() + ", " +
 										canopy.getCenter().getId() + ", " + 
-										(canopy.getUsers().size()+1) +  ")");
-				// the first user in the cluster is the center
-				int position = 1;
-				UserProfile center = canopy.getCenter();
-				statement.executeUpdate("INSERT INTO " + TABLE_USERS + " VALUES (" +
-									center.getId() + ", " + canopy.getCanopyId() + ", " + position + ")"); 
+										(canopy.getUsers().size()) +  ")");
+//				// the first user in the cluster is the center
+//				int position = 1;
+//				UserProfile center = canopy.getCenter();
+//				statement.executeUpdate("INSERT INTO " + TABLE_USERS + " VALUES (" +
+//									center.getId() + ", " + canopy.getCanopyId() + ", " + position + ")"); 
 				// then the rest of the users are stored by their distance to the center
+				int position = 0;
 				Iterator<UserProfile> iter = canopy.getUsers().iterator();
 				while(iter.hasNext()) {
 					position++;

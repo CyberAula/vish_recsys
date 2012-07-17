@@ -4,6 +4,8 @@
  */ 
 package restserver;
 
+import java.util.logging.Logger;
+
 import manager.SocialContextManager;
 
 import org.restlet.resource.Get;
@@ -14,9 +16,11 @@ import org.restlet.resource.ServerResource;
  *
  */
 public class RecSysResource extends ServerResource {
+	
+	private Logger log = Logger.getLogger("RecSysServerResource");
 
 	@Get
-	public String initSocialContextManager() {
+	public void initSocialContextManager() {
 		SocialContextManager scm = new SocialContextManager();
 		// First the user profile clustering
 		scm.doUserProfileClustering();
@@ -24,8 +28,6 @@ public class RecSysResource extends ServerResource {
 		scm.doLOAssignment();
 		
 		// Print information about clusters generated
-		System.out.println(scm.getClustersInformation());
-		
-		return "ViSH RecSys launched!";
+		log.info(scm.getClustersInformation()); 
 	}
 }

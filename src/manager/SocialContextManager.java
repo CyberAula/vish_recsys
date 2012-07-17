@@ -30,8 +30,11 @@ import entities.UserProfile;
 public class SocialContextManager {
 
 	// Canopy thresholds T1 > T2
-	private final double T1 = 3;
-	private final double T2 = 1;
+	private final double T1 = 4;
+	private final double T2 = 2;
+	
+	// Number of top subjects used in ViSH
+	private final int TOP_SUBJECTS = 5;
 	
 	// Social clusters
 	private List<Canopy> clusters;
@@ -50,9 +53,12 @@ public class SocialContextManager {
 		// configure the Canopy clusterer
 		ViSHDistance measure = new ViSHDistance();
 		CanopyClusterer clusterer = new CanopyClusterer(measure, T1, T2);
-		// create the social clusters based on the user profiles stored in the ViSH database
+		// create the social clusters based on 
+		// the user profiles stored in the ViSH database
+		// and the top subjects used in ViSH
 		List <UserProfile> source = vishDB.getUserProfiles();
-		clusters = clusterer.createCanopies(source);
+		List <String> topSubjects = vishDB.getTopSubjects(TOP_SUBJECTS);
+		clusters = clusterer.createCanopies(source, topSubjects);
 		// close the connection with the ViSH database
 		vishDB.close();
 		
@@ -163,7 +169,7 @@ public class SocialContextManager {
 	 * @return detailed information about the clusters generated
 	 */
 	public String getClustersInformation() {
-		String info = "\n";
+		String info = "\n" + "*****************************************" + "\n";
 		
 		// connecting to the RecSys database
 		RecSysDatabaseDriver recsysDb = new RecSysDatabaseDriver();
@@ -173,6 +179,7 @@ public class SocialContextManager {
 		List <Canopy> clusters = recsysDb.getAllClusters();
 		int numberOfClusters = clusters.size();
 		info = info + "Number of social clusters created: " + numberOfClusters + "\n";
+		info = info + "*****************************************" + "\n";
 		
 		// Information about users in every cluster
 		Iterator<Canopy> clusterIter = clusters.iterator();

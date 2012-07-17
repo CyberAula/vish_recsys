@@ -95,22 +95,31 @@ public class ViSHDistance {
 	 * @return the distance
 	 */
 	private double languageFolkDistance(List<String> languages1, List<String> languages2) {
-		double dist = 100;
-		Iterator<String> iter1 = languages1.iterator();
-		// iterate over all the subjects in the list 1
-		while(iter1.hasNext()) {
-			String l1 = iter1.next();
-			Iterator<String> iter2 = languages2.iterator();
-			// iterate over all the subjects in the list 2 
-			// to compare with the element from list 1
-			while(iter2.hasNext()) {
-				String l2 = iter2.next();
-				double editD = LevenshteinDistance.computeLevenshteinDistance(l1, l2);
-				// if the distance between 2 subjects is the lowest 
-				// until that moment we save it
-				if(editD < dist) dist = editD;
+		// Distance 2 is the maximum distance possible between two languages
+		// as the languages are defined by strings with lenght 2 (e.g. en, es...)
+		double dist = 2;
+		// when both users have languages set
+		if(languages1.size()>0 && languages2.size()>0) {
+			dist = 100;
+			Iterator<String> iter1 = languages1.iterator();
+			// iterate over all the subjects in the list 1
+			while(iter1.hasNext()) {
+				String l1 = iter1.next();
+				Iterator<String> iter2 = languages2.iterator();
+				// iterate over all the subjects in the list 2 
+				// to compare with the element from list 1
+				while(iter2.hasNext()) {
+					String l2 = iter2.next();
+					double editD = LevenshteinDistance.computeLevenshteinDistance(l1, l2);
+					// if the distance between 2 subjects is the lowest 
+					// until that moment we save it
+					if(editD < dist) dist = editD;
+				}
 			}
+			return dist;
 		}
+		// when at least one of the users don't have languages set, 
+		// the distance returned is s2 
 		return dist;
 	}
 

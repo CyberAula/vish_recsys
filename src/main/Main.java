@@ -18,8 +18,12 @@ public class Main {
 	    // Create a new Component.  
 	    Component component = new Component();  
 	  
-	    // Add a new HTTP server listening on port 8182.  
-	    component.getServers().add(Protocol.HTTP, 8182);  
+	    // Add a new HTTP server listening on the port specified
+	    int port = 8182;
+	    if(args.length != 0) {
+	    	port = Integer.valueOf(args[0]);
+	    }
+	    component.getServers().add(Protocol.HTTP, port);  
 	  
 	    // Attach the sample application.  
 	    component.getDefaultHost().attach("/recsys", new RecSysApplication());  

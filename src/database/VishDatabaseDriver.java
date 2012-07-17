@@ -208,4 +208,30 @@ public class VishDatabaseDriver {
 		return LOs;
 	}
 	
+	/**
+	 * Query the top subjects in ViSH
+	 * 
+	 * @return topSubjects 
+	 */
+	public List<String> getTopSubjects(int top) {
+		List<String> topSubjects = new ArrayList<String>();
+		
+		String query = "SELECT tags.name,COUNT(taggings.id) " +
+					"FROM tags LEFT JOIN taggings ON taggings.tag_id=tags.id GROUP BY tags.id ORDER BY COUNT(taggings.id) DESC " +
+					"LIMIT " + top;
+		try {
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()) {
+				String subject = result.getString("name");
+				topSubjects.add(subject);
+			}
+		}
+		catch(SQLException e) {
+			dbLogger.log(Level.WARNING, "Error while fetching top subjects from " + DB_NAME + " database");
+			e.printStackTrace();
+		}
+		
+		return topSubjects;
+	}
+	
 }

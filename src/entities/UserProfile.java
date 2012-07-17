@@ -3,6 +3,7 @@
  */
 package entities;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -105,4 +106,25 @@ public class UserProfile implements Comparable<UserProfile> {
 	public int compareTo(UserProfile u) {
 		return  (int)(this.distanceToCenter - u.distanceToCenter);
 	}
+	
+	/**
+	 * Add new subjects to the list of user profile subjects
+	 * if they belong to the ViSH top subjects
+	 * 
+	 * @param newSubjects
+	 */
+	public void addTopSubjects(List<String> newSubjects, List<String> topSubjects) {
+		// Iterate over all the new subjects to check if the user profile 
+		// has them in the current subjects list
+		Iterator<String> newSubIt = newSubjects.iterator();
+		while(newSubIt.hasNext()) {
+			String newSubject = newSubIt.next();
+			// if the current list does not contains a subject, 
+			// it is added when it belongs to the top ViSH subjects
+			if(!subjects.contains(newSubject) && topSubjects.contains(newSubject)) {
+				subjects.add(newSubject);
+			}
+		}
+	}
+	
 }
