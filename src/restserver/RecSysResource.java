@@ -22,10 +22,7 @@ public class RecSysResource extends ServerResource {
 	@Get
 	public void initSocialContextManager() {
 		SocialContextManager scm = new SocialContextManager();
-		// First the user profile clustering
-		scm.doUserProfileClustering();
-		// Then, the learning objects assignment
-		scm.doLOAssignment();
+		scm.generateSocialContext();
 		
 		// Print information about clusters generated
 		log.info(scm.getClustersInformation()); 

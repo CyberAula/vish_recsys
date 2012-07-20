@@ -16,26 +16,23 @@ import entities.UserProfile;
  */
 public class ViSHDistance {
 	
-	// Weight for subject
-	private double wSubject = 0.8;
-	private double wLanguage = 0.2;
+	// Weights for every user profile feature 
+	// They must add up to 1
+	private final double SUBJECTS_WEIGHT = 0.8;
+	private final double LANGUAGES_WEIGHT = 0.2;
+	private final double TARGET_LEVEL_WEIGHT = 0;
+	private final double ROLE_WEIGHT = 0;
+	private final double ORGANIZATION_WEIGHT = 0;
+	private final double COUNTRY_WEIGHT = 0;
+	private final double CITY_WEIGHT = 0;
+	
 	
 	/**
-	 * Constructor
-	 */
-	public ViSHDistance() {
-		
-	}
-	
-	/**
-	 * Specific measure to calculate the distance between two user profiles in ViSH
+	 * Ad hoc measure to calculate the distance between two user profiles in ViSH.
 	 * A user profile is defined as follows: 
-	 * <int userId, String subject, String language>
-	 * The distance is defined as follows:
-	 * Dvish (u1, u2) = [wSubject * editD(u1_subject, u2_subject) + 
-	 * 						wLanguage * editD(u1_language, u2_language)]/(wSubject + wLanguage)
+	 * U:= <subjects, languages, targetLevel, followers, role, organization, country, city> 
 	 * 
-	 * The userID is ignored when calculating the distance
+	 * The userID and followers are ignored when calculating the distance
 	 * 
 	 * @param u1 user
 	 * @param u2 user
@@ -49,7 +46,7 @@ public class ViSHDistance {
 		// Second, calculate the distance among the languages
 		double languageDist = languageFolkDistance(u1.getLanguages(), u2.getLanguages());
 		// Finally, calculate the final weighted distance
-		dist = (wSubject * subjectDist + wLanguage * languageDist)/(wSubject + wLanguage);
+		dist = (SUBJECTS_WEIGHT * subjectDist + LANGUAGES_WEIGHT * languageDist);
 		
 		return dist;
 	}

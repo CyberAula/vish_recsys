@@ -1,5 +1,6 @@
 /**
- * Define a user profile in ViSH 
+ * Define a user profile in ViSH as follows:
+ * U:= <subjects, languages, targetLevel, followers, role, organization, country, city> 
  */
 package entities;
 
@@ -21,6 +22,8 @@ public class UserProfile implements Comparable<UserProfile> {
 	// target level described by the min and max age the user is focused on
 	private int minTargetLevel;
 	private int maxTargetLevel;
+	// ViSH followers
+	private int followers;
 	// the context related to the user in his daily activity
 	private String role;
 	// more personal information
