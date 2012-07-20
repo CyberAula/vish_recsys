@@ -92,6 +92,20 @@ public class UserProfile implements Comparable<UserProfile> {
 	}
 	
 	/**
+	 * @return the minTargetLevel
+	 */
+	public int getMinTargetLevel() {
+		return minTargetLevel;
+	}
+
+	/**
+	 * @return the maxTargetLevel
+	 */
+	public int getMaxTargetLevel() {
+		return maxTargetLevel;
+	}
+
+	/**
 	 * Set the distance between this point and the 
 	 * center of the canopy it belongs to
 	 * 
@@ -129,5 +143,5 @@ public class UserProfile implements Comparable<UserProfile> {
 			}
 		}
 	}
-	
+
 }

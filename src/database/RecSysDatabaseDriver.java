@@ -3,16 +3,20 @@
  */
 package database;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.restlet.data.Language;
 
 import clustering.Canopy;
 import entities.LearningObject;
@@ -47,8 +51,12 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	// id (integer), centerId (integer)
 	private final String TABLE_CLUSTERS = "clusters";
 	private final String TABLE_CLUSTERS_ID = "id";
-	private final String TABLE_CLUSTERS_CENTER_ID = "centerId";
 	private final String TABLE_CLUSTERS_SIZE = "size";
+	//private final String TABLE_CLUSTERS_CENTER_ID = "centerId";
+	private final String TABLE_CLUSTERS_CENTROID_SUBJECTS = "centroidSubjects";
+	private final String TABLE_CLUSTERS_CENTROID_LANGUAGES = "centroidLanguages";
+	private final String TABLE_CLUSTERS_CENTROID_MIN_AGE = "centroidMinAge";
+	private final String TABLE_CLUSTERS_CENTROID_MAX_AGE = "centroidMaxAge";
 	 
 	// LEARNING_OBJECTS table
 	// id (integer), clusterId (integer), type (integer), position (integer)
@@ -115,8 +123,11 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 			statement.execute("DROP TABLE IF EXISTS " + TABLE_CLUSTERS);
 			String createClustersTableCmd = "CREATE TABLE " + TABLE_CLUSTERS + " (" + 
 													TABLE_CLUSTERS_ID + " integer, " +
-													TABLE_CLUSTERS_CENTER_ID + " integer, " +
-													TABLE_CLUSTERS_SIZE + " integer)";
+													TABLE_CLUSTERS_SIZE + " integer, " +
+													TABLE_CLUSTERS_CENTROID_SUBJECTS + " varchar[], " +
+													TABLE_CLUSTERS_CENTROID_LANGUAGES + " varchar[], " +
+													TABLE_CLUSTERS_CENTROID_MIN_AGE + " integer, " +
+													TABLE_CLUSTERS_CENTROID_MAX_AGE + " integer)";
 			statement.execute(createClustersTableCmd);
 			
 			dbLogger.log(Level.INFO, "Droping the old version and creating the new table: " + TABLE_LO);
@@ -158,23 +169,28 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 			}
 			// create the cluster in the database and the users related to it
 			else {
-				statement.executeUpdate("INSERT INTO " + TABLE_CLUSTERS + " VALUES (" + 
+				String NULL = "{NULL}";
+				String [] cenroidSubjects = 
+						canopy.getCenter().getSubjects().toArray(new String[canopy.getCenter().getSubjects().size()]);
+				String [] centroidLanguages = 
+						canopy.getCenter().getLanguages().toArray(new String[canopy.getCenter().getLanguages().size()]);
+				String createClusterCmd = "INSERT INTO " + TABLE_CLUSTERS + " VALUES (" + 
 										canopy.getCanopyId() + ", " +
-										canopy.getCenter().getId() + ", " + 
-										(canopy.getUsers().size()) +  ")");
-//				// the first user in the cluster is the center
-//				int position = 1;
-//				UserProfile center = canopy.getCenter();
-//				statement.executeUpdate("INSERT INTO " + TABLE_USERS + " VALUES (" +
-//									center.getId() + ", " + canopy.getCanopyId() + ", " + position + ")"); 
-				// then the rest of the users are stored by their distance to the center
-				int position = 0;
+										canopy.getUsers().size() + ", " + 
+										"'" + (cenroidSubjects.length==0 ? NULL : PostgreSQLTextArray.stringArrayToPostgreSQLTextArray(cenroidSubjects)) + "', " +
+										"'" + (centroidLanguages.length==0 ? NULL : PostgreSQLTextArray.stringArrayToPostgreSQLTextArray(centroidLanguages)) + "', " +
+										canopy.getCenter().getMinTargetLevel() + ", " +
+										canopy.getCenter().getMaxTargetLevel() + ")";
+				statement.execute(createClusterCmd);
+										
+				// then users in the cluster are stored by their distance to the center in the table USERS
+				int position = 1;
 				Iterator<UserProfile> iter = canopy.getUsers().iterator();
 				while(iter.hasNext()) {
-					position++;
 					UserProfile u = iter.next();
 					statement.executeUpdate("INSERT INTO " + TABLE_USERS + " VALUES (" +
 									u.getId() + ", " + canopy.getCanopyId() + ", " + position + ")");
+					position++;
 				}
 			}
 		}
@@ -186,7 +202,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	
 	/**
 	 * READ 
-	 * 
+	 *  
 	 * @param canopy
 	 */
 	public Canopy getCluster(int canopyId) {
@@ -206,9 +222,27 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 		try {
 			ResultSet result = statement.executeQuery(query);
 			while(result.next()) {
-				// we only need the id
 				int id = result.getInt(TABLE_CLUSTERS_ID);
-				Canopy c = new Canopy(id);
+				
+				int size = result.getInt(TABLE_CLUSTERS_SIZE);
+				
+				// might be multiple subjects
+				List <String> subjectsList = new ArrayList<String>();
+				Array sqlArray = result.getArray(TABLE_CLUSTERS_CENTROID_SUBJECTS);
+				String[] textArray = (String[])sqlArray.getArray();
+				if(textArray[0] != null) subjectsList = new ArrayList<String>(Arrays.asList(textArray));
+				
+				// TODO might be multiple languages (currently only one)
+				String language = result.getString(TABLE_CLUSTERS_CENTROID_LANGUAGES);
+				List <String> languagesList = new ArrayList<String>();
+				if(language != null) languagesList.add(language);
+				
+				int minAge = result.getInt(TABLE_CLUSTERS_CENTROID_MIN_AGE);
+				int maxAge = result.getInt(TABLE_CLUSTERS_CENTROID_MAX_AGE);
+				
+				UserProfile centroid = new UserProfile(-1, subjectsList, languagesList, minAge, maxAge);
+				
+				Canopy c = new Canopy(id, centroid);
 				clusters.add(c);
 			}
 		}

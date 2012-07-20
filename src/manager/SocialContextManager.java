@@ -50,10 +50,10 @@ public class SocialContextManager {
 	 * - the learning objects assignment
 	 */
 	public void generateSocialContext() {
-		// connecting to the database ViSH database
+		// connecting to the ViSH database
 		VishDatabaseDriver vishDB = new VishDatabaseDriver();
 		vishDB.connect();
-		// connecting to the database RecSys database
+		// connecting to the RecSys database
 		RecSysDatabaseDriver recsysDB = new RecSysDatabaseDriver();
 		recsysDB.connect();
 		
@@ -137,16 +137,23 @@ public class SocialContextManager {
 	 * @param targetUser
 	 * @return the id of the closest cluster
 	 */
-	public int discoverUserCluster(UserProfile targetUser) {
-		log.log(Level.INFO, "Discovering the closest cluster to the user with id: " + targetUser.getId());
+	public int discoverUserCluster(int targetUserId) {
+		log.log(Level.INFO, "Discovering the closest cluster to the user with id: " + targetUserId);
 		
 		int closestCanopyId = -1;
 		
+		// connecting to the ViSH database
+		VishDatabaseDriver vishDB = new VishDatabaseDriver();
+		vishDB.connect();
 		// connecting to the RecSys database
-		RecSysDatabaseDriver db = new RecSysDatabaseDriver();
-		db.connect();
-		// retrieve the clusters
-		List<Canopy> clusters = db.getAllClusters();
+		RecSysDatabaseDriver recsysDB = new RecSysDatabaseDriver();
+		recsysDB.connect();
+		
+		// retrieve the target user profile
+		UserProfile targetUser = vishDB.getUserProfile(targetUserId);
+		
+		// retrieve the social clusters
+		List<Canopy> clusters = recsysDB.getAllClusters();
 		ViSHDistance measure = new ViSHDistance();
 		// iterate over all the clusters to find the closest to the target user
 		Iterator<Canopy> iter = clusters.iterator();
@@ -155,12 +162,13 @@ public class SocialContextManager {
 			Canopy c = iter.next();
 			double distance = measure.calculateDistance(c.getCenter(), targetUser);
 			if(distance < minDist) {
-				distance = minDist;
+				minDist = distance;
 				closestCanopyId = c.getCanopyId();
 			}
 		}
-		// close the database connection
-		db.close();
+		// close the database connections
+		vishDB.close();
+		recsysDB.close();
 				
 		return closestCanopyId;
 	}

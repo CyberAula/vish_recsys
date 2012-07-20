@@ -21,9 +21,8 @@ public class Canopy {
 	// points that are into the canopy
 	private List<UserProfile> users = new ArrayList<UserProfile>();
 	
-	
 	/**
-	 * Empty contructor
+	 * Empty constructor
 	 */
 	public Canopy() {
 		
@@ -31,11 +30,10 @@ public class Canopy {
 	
 	/**
 	 * Constructor
-	 * 
-	 * @param canopyId
 	 */
-	public Canopy(int canopyId) {
-		this.canopyId = canopyId;
+	public Canopy(int id, UserProfile user) {
+		this.canopyId = id;
+		this.center = user;
 	}
 	
 	/**

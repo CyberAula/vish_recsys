@@ -1,6 +1,6 @@
 /**
  * Resource which provides a GET representation
- * to initialize the clustering process
+ * to initialize the social context generation process
  */ 
 package restserver;
 
@@ -15,16 +15,19 @@ import org.restlet.resource.ServerResource;
  * @author Daniel Gallego Vico
  *
  */
-public class RecSysResource extends ServerResource {
+public class SocialContextResource extends ServerResource {
 	
-	private Logger log = Logger.getLogger("RecSysServerResource");
+	private Logger log = Logger.getLogger("SocialContextResource");
 
 	@Get
-	public void initSocialContextManager() {
+	public String initSocialContextManager() {
 		SocialContextManager scm = new SocialContextManager();
 		scm.generateSocialContext();
 		
 		// Print information about clusters generated
-		log.info(scm.getClustersInformation()); 
+		log.info(scm.getClustersInformation());
+		
+		return "Social context successfully generated!";
 	}
+	
 }

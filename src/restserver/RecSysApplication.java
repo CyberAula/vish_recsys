@@ -18,11 +18,13 @@ public class RecSysApplication extends Application {
      */
     @Override
     public synchronized Restlet createInboundRoot() {
-        // Create a router Restlet that routes each call to a new instance of HelloWorldResource.
+        // Create a router Restlet that routes each call to a new instance of RecSysdResource.
         Router router = new Router(getContext());
 
-        // Defines only one route
-        router.attach("/launch", RecSysResource.class);
+        // Route to launch the Social Context generation process  
+        router.attach("/socialcontext/generate", SocialContextResource.class);
+        // Route to discover the closest user's cluster considering a user id passed as a parameter
+        router.attach("/socialcontext/usercluster", DiscoverUserClusterResource.class);
 
         return router;
     }
