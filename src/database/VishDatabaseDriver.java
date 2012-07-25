@@ -161,30 +161,31 @@ public class VishDatabaseDriver {
 				"activity_objects.id=actors.activity_object_id LEFT OUTER JOIN taggings " +
 				"ON taggings.taggable_type='ActivityObject' AND " +
 				"taggings.taggable_id=activity_objects.id LEFT OUTER JOIN tags ON tags.id=taggings.tag_id " +
-				"WHERE actors.subject_type='User' AND actors.id=6 " +
-				"GROUP BY actors.id,users.language,activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count";
+				"WHERE actors.subject_type='User' AND actors.id=" + userId +
+				" GROUP BY actors.id,users.language,activity_objects.age_min,activity_objects.age_max,activity_objects.follower_count";
 		try {
 			ResultSet result = statement.executeQuery(selectQuery);
-			result.next();
-			// user id
-			int id = result.getInt("id");
-			
-			// TODO might be multiple languages (currently only one)
-			String language = result.getString("language");
-			List <String> languagesList = new ArrayList<String>();
-			if(language != null) languagesList.add(language);
-			
-			// might be multiple subjects
-			List <String> subjectsList = new ArrayList<String>();
-			Array sqlArray = result.getArray("array_agg");
-			String[] textArray = (String[])sqlArray.getArray();
-			if(textArray[0] != null) subjectsList = new ArrayList<String>(Arrays.asList(textArray));
-			
-			// target students' age 
-			int minAge = result.getInt("age_min");
-			int maxAge = result.getInt("age_max");
-			
-			user = new UserProfile(id, subjectsList, languagesList, minAge, maxAge);
+			if(result.next()) {
+				// user id
+				int id = result.getInt("id");
+				
+				// TODO might be multiple languages (currently only one)
+				String language = result.getString("language");
+				List <String> languagesList = new ArrayList<String>();
+				if(language != null) languagesList.add(language);
+				
+				// might be multiple subjects
+				List <String> subjectsList = new ArrayList<String>();
+				Array sqlArray = result.getArray("array_agg");
+				String[] textArray = (String[])sqlArray.getArray();
+				if(textArray[0] != null) subjectsList = new ArrayList<String>(Arrays.asList(textArray));
+				
+				// target students' age 
+				int minAge = result.getInt("age_min");
+				int maxAge = result.getInt("age_max");
+				
+				user = new UserProfile(id, subjectsList, languagesList, minAge, maxAge);
+			}
 		}
 		catch(SQLException e) {
 			dbLogger.log(Level.WARNING, "Error while fetching the user profile whit id " + userId  + "from " + DB_NAME + " database");

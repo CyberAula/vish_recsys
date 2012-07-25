@@ -63,19 +63,25 @@ public class ViSHDistance {
 	 */
 	private double subjectFolkDistance(List<String> subjects1, List<String> subjects2) {
 		double dist = 100;
-		Iterator<String> iter1 = subjects1.iterator();
-		// iterate over all the subjects in the list 1
-		while(iter1.hasNext()) {
-			String s1 = iter1.next();
-			Iterator<String> iter2 = subjects2.iterator();
-			// iterate over all the subjects in the list 2 
-			// to compare with the element from list 1
-			while(iter2.hasNext()) {
-				String s2 = iter2.next();
-				double editD = LevenshteinDistance.computeLevenshteinDistance(s1, s2);
-				// if the distance between 2 subjects is the lowest 
-				// until that moment we save it
-				if(editD < dist) dist = editD;
+		// if both subjects list are empty, the distance among them is 0 
+		if(subjects1.size()==0 && subjects2.size()==0) {
+			dist = 0;
+		}
+		else {
+			Iterator<String> iter1 = subjects1.iterator();
+			// iterate over all the subjects in the list 1
+			while(iter1.hasNext()) {
+				String s1 = iter1.next();
+				Iterator<String> iter2 = subjects2.iterator();
+				// iterate over all the subjects in the list 2 
+				// to compare with the element from list 1
+				while(iter2.hasNext()) {
+					String s2 = iter2.next();
+					double editD = LevenshteinDistance.computeLevenshteinDistance(s1, s2);
+					// if the distance between 2 subjects is the lowest 
+					// until that moment we save it
+					if(editD < dist) dist = editD;
+				}
 			}
 		}
 		return dist;
@@ -95,6 +101,7 @@ public class ViSHDistance {
 		// Distance 2 is the maximum distance possible between two languages
 		// as the languages are defined by strings with lenght 2 (e.g. en, es...)
 		double dist = 2;
+		
 		// when both users have languages set
 		if(languages1.size()>0 && languages2.size()>0) {
 			dist = 100;
@@ -115,8 +122,9 @@ public class ViSHDistance {
 			}
 			return dist;
 		}
+		
 		// when at least one of the users don't have languages set, 
-		// the distance returned is s2 
+		// the distance returned is 2 
 		return dist;
 	}
 

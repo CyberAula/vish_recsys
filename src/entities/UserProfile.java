@@ -4,6 +4,7 @@
  */
 package entities;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,18 +32,19 @@ public class UserProfile implements Comparable<UserProfile> {
 	private String country;
 	private String city;
 	
-	
 	// the distance between this point and the 
 	// center of the canopy the user belongs to
 	private double distanceToCenter;
 	
 	/**
-	 * Constructor
+	 * Simple constructor
 	 * 
 	 * @param userId
 	 */
 	public UserProfile(int userId) {
 		this.userId = userId;
+		this.subjects = new ArrayList<String>();
+		this.languages = new ArrayList<String>();
 	}
 	
 	/**

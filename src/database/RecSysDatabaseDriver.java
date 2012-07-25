@@ -303,6 +303,38 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 		return users;
 	}
 	
+	/**
+	 * Method to return the cluster corresponding to a user given
+	 * 
+	 * @param userId
+	 * @return the clusterId or -1 if the user is not in the system
+	 */
+	public int getUserClusterId(int targetUserId) {
+		int targetClusterId = -1;
+
+		String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS_ID + "=" + targetUserId;
+		try {
+			int minPosition = 1000;
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()) {
+				int clusterId = result.getInt(TABLE_USERS_CLUSTER_ID);
+				int position = result.getInt(TABLE_USERS_POSITION);
+				// we return the clusterId in which the user has the smaller position
+				// (i.e. in which the user is closest to the cluster centroid)
+				if(position < minPosition) {
+					minPosition = position;
+					targetClusterId = clusterId;
+				}
+			}
+		}
+		catch (SQLException e) {
+			dbLogger.log(Level.WARNING, "Error while retrieving the clusterId corresponding to the user with id: " + targetClusterId);
+			e.printStackTrace();
+		}
+		
+		return targetClusterId;
+	}
+	
 	
 	/*
 	 ***************************************************************************

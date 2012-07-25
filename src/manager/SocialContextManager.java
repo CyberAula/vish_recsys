@@ -149,23 +149,33 @@ public class SocialContextManager {
 		RecSysDatabaseDriver recsysDB = new RecSysDatabaseDriver();
 		recsysDB.connect();
 		
-		// retrieve the target user profile
-		UserProfile targetUser = vishDB.getUserProfile(targetUserId);
-		
-		// retrieve the social clusters
-		List<Canopy> clusters = recsysDB.getAllClusters();
-		ViSHDistance measure = new ViSHDistance();
-		// iterate over all the clusters to find the closest to the target user
-		Iterator<Canopy> iter = clusters.iterator();
-		double minDist = 1000;
-		while(iter.hasNext()) {
-			Canopy c = iter.next();
-			double distance = measure.calculateDistance(c.getCenter(), targetUser);
-			if(distance < minDist) {
-				minDist = distance;
-				closestCanopyId = c.getCanopyId();
+		// if the user is into an existing cluster, return its cluster id
+		int userClusterId = recsysDB.getUserClusterId(targetUserId);
+		if(userClusterId != -1)  {
+			closestCanopyId = userClusterId;
+		}
+		// if the user is new in ViSH, discover the closest cluster among the existing ones
+		else {
+			// retrieve the target user profile
+			UserProfile targetUser = vishDB.getUserProfile(targetUserId);
+			
+			// retrieve the social clusters
+			List<Canopy> clusters = recsysDB.getAllClusters();
+			ViSHDistance measure = new ViSHDistance();
+			
+			// iterate over all the clusters to find the closest to the target user
+			Iterator<Canopy> iter = clusters.iterator();
+			double minDist = 1000;
+			while(iter.hasNext()) {
+				Canopy c = iter.next();
+				double distance = measure.calculateDistance(c.getCenter(), targetUser);
+				if(distance < minDist) {
+					minDist = distance;
+					closestCanopyId = c.getCanopyId();
+				}
 			}
 		}
+		
 		// close the database connections
 		vishDB.close();
 		recsysDB.close();
