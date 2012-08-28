@@ -127,6 +127,7 @@ public class CanopyClusterer {
 	 * 
 	 * 
 	 * @param points, a list<Vector> defining the points to be clustered
+	 * @param topSubjects, the feature subjects that are more important in the point space analyzed
 	 * @return the List<Canopy> created
 	 */
 	public List<Canopy> createCanopies(List<UserProfile> points, List<String> topSubjects) {
@@ -142,7 +143,7 @@ public class CanopyClusterer {
 			// condition for grey users (users without subjects of interest)
 			if (p1.getSubjects().isEmpty()) {
 				// if it is the first user in the "grey" canopy, 
-				// it is set as the center and is added to the canopy
+				// it is set as the center and it is added to the canopy
 				if(greyUsersCanopy.getCenter() == null ) {
 					greyUsersCanopy = new Canopy(p1, nextCanopyId++);
 					greyUsersCanopy.addUser(p1);
@@ -153,7 +154,7 @@ public class CanopyClusterer {
 				continue;
 			}
 			
-			// a clone of the point picked is the centroid of the new canopy 
+			// a clone of the point picked becomes the centroid of the new canopy 
 			Canopy canopy = new Canopy(p1, nextCanopyId++);
 			// the point is added to the canopy with distance to the center 0
 			p1.setDistanceToCenter(0);

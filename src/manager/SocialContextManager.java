@@ -1,6 +1,6 @@
 package manager;
 /**
- * Class in charge of generating the social clusters in which the
+ * Generates the social clusters in which the
  * users are gathered by similarity.
  * 
  * The clustering process is based on Canopy algorithm.
@@ -45,7 +45,7 @@ public class SocialContextManager {
 	private Logger log = Logger.getLogger("SocialContextManagerLog");
 	
 	/**
-	 * Generates the social context related to the ViSH users by carrying on:
+	 * Generates the social context related to the ViSH users by carrying out:
 	 * - the user profile clustering
 	 * - the learning objects assignment
 	 */
@@ -67,7 +67,13 @@ public class SocialContextManager {
 	}
 
 	/**
-	 * Executes the user profile clustering process
+	 * Executes the user profile clustering process.
+	 * 
+	 * As a result, a set of social clusters is generated
+	 * and stored in the RecSys database
+	 * 
+	 * @param vishDB
+	 * @param recsysDB
 	 */
 	private void doUserProfileClustering(VishDatabaseDriver vishDB, RecSysDatabaseDriver recsysDB) {
 		log.log(Level.INFO, "User profile clustering started");
@@ -77,8 +83,8 @@ public class SocialContextManager {
 		CanopyClusterer clusterer = new CanopyClusterer(measure, T1, T2);
 		// create the social clusters based on 
 		// the user profiles stored in the ViSH database
-		// and the top subjects used in ViSH
 		users = vishDB.getUserProfiles();
+		// and the top subjects from ViSH
 		List <String> topSubjects = vishDB.getTopSubjects(TOP_SUBJECTS);
 		clusters = clusterer.createCanopies(users, topSubjects);
 		
@@ -95,7 +101,13 @@ public class SocialContextManager {
 	}
 	
 	/**
-	 * Assigns the Learning Objects related to every cluster
+	 * Assigns the Learning Objects related to every cluster.
+	 * 
+	 * As a result, all the LO related to the users belonging to a cluster
+	 * are assigned to that cluster and stored in the RecSys database.
+	 * 
+	 * @param vishDB
+	 * @param recsysDB
 	 */
 	private void doLOAssignment(VishDatabaseDriver vishDB, RecSysDatabaseDriver recsysDB) {
 		log.log(Level.INFO, "Learning Object Assignment started");
@@ -182,6 +194,9 @@ public class SocialContextManager {
 				
 		return closestCanopyId;
 	}
+	
+	
+	/* ========== INFO REPRESENTATION ========== */
 	
 	/**
 	 * 

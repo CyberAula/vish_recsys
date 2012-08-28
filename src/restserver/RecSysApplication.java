@@ -1,5 +1,6 @@
 /**
- * 
+ * RESTlet application that defines the routes to start
+ * the processes related to the Recommender
  */
 package restserver;
 
@@ -28,5 +29,4 @@ public class RecSysApplication extends Application {
 
         return router;
     }
-
 }

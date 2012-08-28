@@ -1,5 +1,5 @@
 /**
- * 
+ * Starts the HTTP server corresponding to the Recommender REST API
  */
 package main;
 
