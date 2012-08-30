@@ -178,7 +178,7 @@ public class CanopyClusterer {
 		        	canopy.getCenter().addTopSubjects(p2.getSubjects(), topSubjects);
 		        }
 			}
-			// sort the users into the canopy
+			// sort the users into the canopy by their distance to the centroid
 			canopy.sortUsersByDistance();
 		}
 		// sort the grey users canopy and add it to the canopies list

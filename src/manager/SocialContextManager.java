@@ -8,6 +8,8 @@ package manager;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -128,11 +130,30 @@ public class SocialContextManager {
 				// add the LOs to the list
 				clusterLOs.addAll(vishDB.getLOfromUser(u));				
 			}
-			// TODO sort the LOs into the cluster by their distance to the cluster center
-			// currently they are sorted taking into account that user's order
+			
+			// remove those LOs that are more than once in the list
+			List<LearningObject> nonRepeatedClusterLOs = new ArrayList<LearningObject>();
+			Iterator<LearningObject> sourceLOite = clusterLOs.iterator();
+			while(sourceLOite.hasNext()) {
+				LearningObject sourceLO = sourceLOite.next();
+				boolean exist = false;
+				for(LearningObject lo : nonRepeatedClusterLOs) {
+					if(lo.getId() == sourceLO.getId()) {
+						exist = true;
+					}
+				}
+				if(!exist) {
+					nonRepeatedClusterLOs.add(sourceLO);
+				}
+			}
+			
+			// sort the LOs into the cluster by their visit count
+			// the more visits, the higher in the list
+			Collections.sort(nonRepeatedClusterLOs);
+			Collections.reverse(nonRepeatedClusterLOs);
 			
 			// iterate over all the LOs to add them to the RecSys database
-			Iterator<LearningObject> LOiter = clusterLOs.iterator();
+			Iterator<LearningObject> LOiter = nonRepeatedClusterLOs.iterator();
 			int position = 1;
 			while(LOiter.hasNext()) {
 				LearningObject lo = LOiter.next();

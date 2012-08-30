@@ -59,12 +59,13 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	private final String TABLE_CLUSTERS_CENTROID_MAX_AGE = "centroidMaxAge";
 	 
 	// LEARNING_OBJECTS table
-	// id (integer), clusterId (integer), type (integer), position (integer)
+	// id (integer), clusterId (integer), type (integer), position (integer), visitCount (integer)
 	private final String TABLE_LO = "learning_objects";
 	private final String TABLE_LO_ID = "id";
 	private final String TABLE_LO_CLUSTER_ID = "clusterId";
 	private final String TABLE_LO_TYPE = "type";
 	private final String TABLE_LO_POSITION = "position";
+	private final String TABLE_LO_VISIT_COUNT = "visitCount";
 	
 	/**
 	 * Connect with the database
@@ -136,6 +137,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 													TABLE_LO_ID + " integer, " +
 													TABLE_LO_CLUSTER_ID + " integer, " +
 													TABLE_LO_TYPE + " varchar(255), " +
+													TABLE_LO_VISIT_COUNT + " integer, " +
 													TABLE_LO_POSITION + " integer)";
 			statement.execute(createLOTableCmd);
 		}
@@ -357,6 +359,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 									lo.getId() + ", " + 
 									cluster.getCanopyId() + ", " +
 									"'" + lo.getType() + "', " +
+									lo.getVisitCount() + ", " +
 									position + ")");
 		}
 		catch (SQLException e) {

@@ -11,7 +11,7 @@ import java.util.List;
  * @author Daniel Gallego Vico
  *
  */
-public class LearningObject {
+public class LearningObject implements Comparable<LearningObject> {
 	
 	/********** ATTRIBUTTES **********/
 	private int id;
@@ -19,6 +19,8 @@ public class LearningObject {
 	private String type;
 	// relevance of the LO in the cluster
 	private int position;
+	// number of times the LO has been visited
+	private int visitCount;
 	
 	// list of subjects that this LO is related to
 	private List<String> subjects;
@@ -27,8 +29,7 @@ public class LearningObject {
 	// target level described by the min and max age recommended
 	private int minTargetLevel;
 	private int maxTargetLevel;
-	// number of times the LO has been used by someone
-	private int timesUsed;
+	
 	// determine if the content is adapted to a mobile device
 	private boolean mobileAdapted;
 	
@@ -39,14 +40,14 @@ public class LearningObject {
 	 * @param type
 	 * @param clusterId
 	 */
-	public LearningObject(int id, String type, List<String> subjects, List<String> languages, int minAge, int maxAge, int timesUsed) {
+	public LearningObject(int id, String type, List<String> subjects, List<String> languages, int minAge, int maxAge, int visitCount) {
 		this.id = id;
 		this.type = type;
 		this.subjects = subjects;
 		this.languages = languages;
 		this.minTargetLevel = minAge;
 		this.maxTargetLevel = maxAge;
-		this.timesUsed = timesUsed;
+		this.visitCount = visitCount;
 	}
 
 	/**
@@ -82,6 +83,24 @@ public class LearningObject {
 	 */
 	public void setPosition(int position) {
 		this.position = position;
+	}
+	
+	/**
+	 * 
+	 * @return visitCount
+	 */
+	public int getVisitCount() {
+		return visitCount;
+	}
+
+	/**
+	 * Compare a given Learning Object with this object.
+	 * If visitCount is greater than the received object,
+	 * then this object is greater than the other.
+	 */
+	@Override
+	public int compareTo(LearningObject arg0) {
+		return (this.visitCount - arg0.visitCount);
 	}
 
 }

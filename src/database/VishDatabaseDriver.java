@@ -247,10 +247,10 @@ public class VishDatabaseDriver {
 				int maxAge = 30; //result.getInt("age_max");
 				
 				// number of times the LO has been used by ViSH users
-				int timesUsed = result.getInt("visit_count");
+				int visitCount = result.getInt("visit_count");
 				
 				// add the LO to the list
-				LearningObject lo = new LearningObject(id, type, subjectsList, languagesList, minAge, maxAge, timesUsed);
+				LearningObject lo = new LearningObject(id, type, subjectsList, languagesList, minAge, maxAge, visitCount);
 				LOs.add(lo);
 			}
 		}
