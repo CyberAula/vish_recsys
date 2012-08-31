@@ -22,11 +22,12 @@ public class RecSysApplication extends Application {
         // Create a router Restlet that routes each call to a new instance of RecSysdResource.
         Router router = new Router(getContext());
 
-        // Route to launch the Social Context generation process  
+        // Route to launch the Social Context generation process 
         router.attach("/socialcontext/generate", SocialContextResource.class);
+        
         // Route to discover the closest user's cluster considering a user id passed as a parameter
-        router.attach("/socialcontext/usercluster", DiscoverUserClusterResource.class);
-
+        router.attach("/socialcontext/discoverusercluster", DiscoverUserClusterResource.class);
+        
         return router;
     }
 }

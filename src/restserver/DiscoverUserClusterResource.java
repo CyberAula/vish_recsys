@@ -19,15 +19,24 @@ public class DiscoverUserClusterResource extends ServerResource {
 	
 	private Logger log = Logger.getLogger("DiscoverUserClusterResource");
 
+	
+	/**
+	 * URI: /socialcontext/discoverusercluster
+	 * Request method: http GET
+	 * Function called: DiscoverUserCluster
+	 * Parameters: ?userid={id}
+	 * 
+	 * @return similarClusterId
+	 */
 	@Get
 	public String userClusterDiscovery() {
 		int userId = Integer.valueOf(getQuery().getValues("userid"));
 		
 		SocialContextManager scm = new SocialContextManager();
-		int similarClusterId = scm.discoverUserCluster(userId);
+		int closestClusterId = scm.discoverUserCluster(userId);
 		
-		log.info("The user " + userId + " is similar to the users into the cluster " + similarClusterId);
+		log.info("The user " + userId + " is similar to the users into the cluster " + closestClusterId);
 		
-		return String.valueOf(similarClusterId);
+		return String.valueOf(closestClusterId);
 	}
 }
