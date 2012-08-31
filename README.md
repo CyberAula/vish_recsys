@@ -18,4 +18,4 @@ By default, the port number used is 8182.
 http://localhost:{port}/recsys/socialcontext/generate
 
 2) Discover the closest user's cluster considering a user id passed as a parameter as follows:
-http://localhost:{port}/recsys/socialcontext/usercluster?userid={number}
+http://localhost:{port}/recsys/socialcontext/discoverusercluster?userid={number}
