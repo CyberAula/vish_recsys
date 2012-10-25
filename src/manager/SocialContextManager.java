@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import models.LearningObject;
+import models.UserProfile;
+
 import clustering.Canopy;
 import clustering.CanopyClusterer;
 
@@ -22,8 +25,6 @@ import clustering.CanopyClusterer;
 import database.RecSysDatabaseDriver;
 import database.VishDatabaseDriver;
 import distance.ViSHDistance;
-import entities.LearningObject;
-import entities.UserProfile;
 
 /**
  * @author Daniel Gallego Vico

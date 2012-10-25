@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import entities.UserProfile;
+import models.UserProfile;
+
 
 /**
  * @author Daniel Gallego Vico

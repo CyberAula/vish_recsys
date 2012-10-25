@@ -21,11 +21,11 @@ public class SituationAssessmentManager {
 	// proactive recommendation is suitable
 	private double T1; 
 	
-	// Each contextual attribute is weighed depending on the
-	// its relative importance to the proactive recommendation 
-	private final double LOCATION_CONTEXT_WEIGHT = 1/3;
-	private final double USER_CONTEXT_WEIGHT = 1/3;
-	private final double SOCIAL_CONTEXT_WEIGHT = 1/3;
+	// Each Recommendation Score (RS) is weighted depending on the
+	// influence factor relative to the proactive recommendation
+	private final double INFLUENCE_SOCIAL = 1/3;
+	private final double INFLUENCE_LOCATION = 1/3;
+	private final double INFLUENCE_USER = 1/3;
 	
 	/**
 	 * Constructor
@@ -41,10 +41,11 @@ public class SituationAssessmentManager {
 	 * @return true is the situation is suitable for a proactive recommendation
 	 */
 	public boolean isSituationSuitable() {
+		double totalInfluence = INFLUENCE_SOCIAL + INFLUENCE_LOCATION + INFLUENCE_USER;
 		// calculate score S1 from weighed context information to analyze suitability
-		S1 = locationContextAssessment() * LOCATION_CONTEXT_WEIGHT + 
-				userContextAssessment() * USER_CONTEXT_WEIGHT + 
-				socialContextAssessment() * SOCIAL_CONTEXT_WEIGHT;
+		S1 = (getSocialRecommendationScore() * INFLUENCE_SOCIAL +
+				getLocationRecommendationScore() * INFLUENCE_LOCATION + 
+				getUserRecommendationScore() * INFLUENCE_SOCIAL)/totalInfluence;
 		if(S1 > T1) {
 			return true;
 		}
@@ -55,12 +56,23 @@ public class SituationAssessmentManager {
 
 	/**
 	 * Calculates a value to indicate the suitability of generating a 
+	 * proactive recommendation attending to the social context
+	 * 
+	 * @return a value between 0 and 1
+	 */
+	private double getSocialRecommendationScore() {
+		// TODO logic
+		return 1;
+	}
+	
+	/**
+	 * Calculates a value to indicate the suitability of generating a 
 	 * proactive recommendation attending to the location context
 	 * 
 	 * @return a value between 0 and 1
 	 */
-	private double locationContextAssessment() {
-		// TODO logic
+	private double getLocationRecommendationScore() {
+		// loop over all the feature values to 
 		return 1;
 	}
 	
@@ -70,18 +82,7 @@ public class SituationAssessmentManager {
 	 * 
 	 * @return a value between 0 and 1
 	 */
-	private double userContextAssessment() {
-		// TODO logic
-		return 1;
-	}
-	
-	/**
-	 * Calculates a value to indicate the suitability of generating a 
-	 * proactive recommendation attending to the social context
-	 * 
-	 * @return a value between 0 and 1
-	 */
-	private double socialContextAssessment() {
+	private double getUserRecommendationScore() {
 		// TODO logic
 		return 1;
 	}

@@ -7,7 +7,8 @@ package distance;
 import java.util.Iterator;
 import java.util.List;
 
-import entities.UserProfile;
+import models.UserProfile;
+
 
 
 /**

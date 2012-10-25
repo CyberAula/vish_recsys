@@ -16,11 +16,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.restlet.data.Language;
+import models.LearningObject;
+import models.UserProfile;
 
 import clustering.Canopy;
-import entities.LearningObject;
-import entities.UserProfile;
 
 /**
  * @author Daniel Gallego Vico
@@ -38,6 +37,7 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	private final String DB_NAME = "vish_recsys_production";
 	private final String DB_USER = "recsys";
 	private final String DB_PASS = "DaniRecommend";
+	//private final String DB_URL = "jdbc:postgresql://vishub-test.global.dit.upm.es/" + DB_NAME;
 	private final String DB_URL = "jdbc:postgresql://vishub.global.dit.upm.es/" + DB_NAME;
 	
 	// USERS table
