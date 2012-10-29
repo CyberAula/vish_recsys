@@ -45,7 +45,8 @@ public class SituationAssessmentManager {
 		// calculate score S1 from weighed context information to analyze suitability
 		S1 = (getSocialRecommendationScore() * INFLUENCE_SOCIAL +
 				getLocationRecommendationScore() * INFLUENCE_LOCATION + 
-				getUserRecommendationScore() * INFLUENCE_SOCIAL)/totalInfluence;
+				getUserRecommendationScore() * INFLUENCE_SOCIAL)
+				/ totalInfluence;
 		if(S1 > T1) {
 			return true;
 		}
