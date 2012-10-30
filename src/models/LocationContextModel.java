@@ -1,5 +1,5 @@
 /**
- * Defines the location context model
+ * Define the location context model
  * and calculates its recommendation score
  */
 package models;
@@ -22,22 +22,24 @@ public class LocationContextModel {
 	private final double TIME_WEIGHT = 4;
 	
 	// Geo-location possible values and their appropriateness factor
-	// TODO: set appr
 	private final int GEO_LOCATION_OUT = 0;
-	private final double GEO_LOCATION_OUT_APPR = 3;;
 	private final int GEO_LOCATION_IN = 1;
+	// Geo-location appropriateness factor for every feature value
+	// TODO: set real values
+	private final double GEO_LOCATION_OUT_APPR = 3;
 	private final double GEO_LOCATION_IN_APPR = 3;
 	
-	// Time possible values and their appropriateness factor
-	// TODO: set appr
+	// Time possible values
 	private final int TIME_MORNING = 0;
-	private final double TIME_MORNING_APPR = 3;
 	private final int TIME_AFTERNOON = 1;
-	private final double TIME_AFTERNOON_APPR = 3;
 	private final int TIME_EVENING = 2;
-	private final double TIME_EVENING_APPR = 3;
 	private final int TIME_NIGHT = 3;
-	private final double TIME_NIGHT_APPR = 3;
+	// Time appropriateness factor for every feature value
+	// TODO: set real values
+	private final double TIME_MORNING_APPR = 4;
+	private final double TIME_AFTERNOON_APPR = 5;
+	private final double TIME_EVENING_APPR = 3;
+	private final double TIME_NIGHT_APPR = 1;
 	
 	// Maximum and minimum model recommendation score values
 	private final int MAX_REC_SCORE = 5;
@@ -45,9 +47,10 @@ public class LocationContextModel {
 	
 	/**
 	 * Constructor: 
-	 * assigns to every feature value its appropriateness
+	 * assigns appropriateness to every feature value
 	 * 
-	 * @param weight
+	 * @param geoLocationValue
+	 * @param timeValue
 	 */
 	public LocationContextModel(int geoLocationValue, int timeValue) {
 		// identify appropriateness of each feature value received
@@ -57,11 +60,12 @@ public class LocationContextModel {
 
 	/**
 	 * 
-	 * @return the recommendation score for location feature
+	 * @return the recommendation score for location context
 	 */
 	public double calculateRecommendationScore() {
-		double RSlocation = (geoLocationFeatureAppr * GEO_LOCATION_WEIGHT + timeFeatureAppr * TIME_WEIGHT)
-							/(GEO_LOCATION_WEIGHT + TIME_WEIGHT);
+		double RSlocation = (geoLocationFeatureAppr * GEO_LOCATION_WEIGHT 
+								+ timeFeatureAppr * TIME_WEIGHT
+							) /(GEO_LOCATION_WEIGHT + TIME_WEIGHT);
 		// normalize
 		return MathUtils.normalizeToZeroOne(RSlocation, MAX_REC_SCORE, MIN_REC_SCORE);
 	}
