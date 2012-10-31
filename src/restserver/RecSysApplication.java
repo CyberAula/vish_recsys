@@ -1,6 +1,6 @@
 /**
- * RESTlet application that defines the routes to start
- * the processes related to the Recommender
+ * RESTlet application that defines the routes 
+ * related to the recommender engine API
  */
 package restserver;
 
@@ -25,8 +25,14 @@ public class RecSysApplication extends Application {
         // Route to launch the Social Context generation process 
         router.attach("/socialcontext/generate", SocialContextResource.class);
         
-        // Route to discover the closest user's cluster considering a user id passed as a parameter
+        // Route to discover the closest user's cluster
         router.attach("/socialcontext/discoverusercluster", DiscoverUserClusterResource.class);
+        
+        // Route to generate a proactive recommendation
+        router.attach("/recommendation/proactive", GenerateProactiveRecommendation.class);
+        
+        // Route to generate a foced recommendation (non proactive)
+        router.attach("/recommendation/forced", GenerateForcedRecommendation.class);
         
         return router;
     }

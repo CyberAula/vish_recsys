@@ -7,6 +7,10 @@
  */
 package manager;
 
+import java.util.ArrayList;
+
+import models.LearningObject;
+
 /**
  * @author Daniel Gallego Vico
  *
@@ -24,6 +28,13 @@ public class ItemAssessmentManager {
 	 */
 	public ItemAssessmentManager(double S1) {
 		this.T2 = Math.abs(1-S1);
+	}
+	
+	public ArrayList<LearningObject> getPersonalizedRecommendation() {
+		ArrayList<LearningObject> itemsRecommended = new ArrayList<LearningObject>();
+		
+		
+		return itemsRecommended;
 	}
 
 }

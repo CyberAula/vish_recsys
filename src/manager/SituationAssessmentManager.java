@@ -35,9 +35,12 @@ public class SituationAssessmentManager {
 	 * Constructor
 	 * 
 	 * @param T1, threshold that has to be exceed in order to consider a proactive recommendation
-	 * @param jsonValues
+	 * @param geoLocation
+	 * @param time
+	 * @param activity
+	 * @param device
 	 */
-	public SituationAssessmentManager(double T1, String jsonValues) {
+	public SituationAssessmentManager(double T1, String geoLocation, String time, String activity, String device) {
 		// TODO extract values from ViSH json received
 		this.T1 = T1;
 	}
@@ -59,6 +62,15 @@ public class SituationAssessmentManager {
 		else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Getter
+	 * 
+	 * @return S1
+	 */
+	public double getS1() {
+		return S1;
 	}
 
 	/**
