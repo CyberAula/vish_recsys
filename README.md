@@ -6,9 +6,9 @@ vish_recsys
 
 --> The vish_recsys.jar can be executed with parameters as follows:
 
-java -jar vish_recsys.jar <port>
+java -jar vish_recsys.jar {port}
 
-Being <port> a number that specifies in which port will listen on the the HTTP server.
+Being {port} a number that specifies in which port will listen on the the HTTP server.
 By default, the port number used is 8182.
 
 
