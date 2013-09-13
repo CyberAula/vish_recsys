@@ -28,6 +28,9 @@ public class SocialContextResource extends ServerResource {
 		log.info(scm.getClustersInformation());
 		
 		return "Social context successfully generated!";
+		
+		// callback to inform about the successful generation
+		
 	}
 	
 }

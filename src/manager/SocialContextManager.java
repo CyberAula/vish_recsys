@@ -8,7 +8,6 @@ package manager;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -32,9 +31,9 @@ import distance.ViSHDistance;
  */
 public class SocialContextManager {
 
-	// Canopy thresholds T1 > T2
-	private final double T1 = 4;
-	private final double T2 = 2;
+	// Canopy thresholds C1 > C2
+	private final double C1 = 6;
+	private final double C2 = 2;
 	
 	// Number of top subjects used in ViSH
 	private final int TOP_SUBJECTS = 5;
@@ -83,7 +82,7 @@ public class SocialContextManager {
 		
 		// configure the Canopy clusterer
 		ViSHDistance measure = new ViSHDistance();
-		CanopyClusterer clusterer = new CanopyClusterer(measure, T1, T2);
+		CanopyClusterer clusterer = new CanopyClusterer(measure, C1, C2);
 		// create the social clusters based on 
 		// the user profiles stored in the ViSH database
 		users = vishDB.getUserProfiles();

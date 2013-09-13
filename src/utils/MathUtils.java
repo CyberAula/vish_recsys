@@ -22,9 +22,6 @@ public class MathUtils {
 	 * @return value normalized
 	 */
 	public static double normalizeToZeroOne(double value, double variableMax, double variableMin) {
-		if(variableMax == variableMin) {
-			return 0.5;
-		}
 		return (value-variableMin)/(variableMax-variableMin);
 	}
 

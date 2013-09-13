@@ -42,14 +42,17 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	
 	// USERS table
 	// id (integer), clusterId (integer), position (integer)
-	private final String TABLE_USERS = "users";
+//	private final String TABLE_USERS = "users";
+	private final String TABLE_USERS = "users_test";
 	private final String TABLE_USERS_ID = "id";
 	private final String TABLE_USERS_CLUSTER_ID = "clusterId";
 	private final String TABLE_USERS_POSITION = "position";
 	
 	// CLUSTERS table
 	// id (integer), centerId (integer)
-	private final String TABLE_CLUSTERS = "clusters";
+	//private final String TABLE_CLUSTERS = "clusters";
+//	private final String TABLE_CLUSTERS = "clusters";
+	private final String TABLE_CLUSTERS = "clusters_test";
 	private final String TABLE_CLUSTERS_ID = "id";
 	private final String TABLE_CLUSTERS_SIZE = "size";
 	//private final String TABLE_CLUSTERS_CENTER_ID = "centerId";
@@ -60,7 +63,8 @@ private Logger dbLogger = Logger.getLogger("VishDatabaseDriverLog");
 	 
 	// LEARNING_OBJECTS table
 	// id (integer), clusterId (integer), type (integer), position (integer), visitCount (integer)
-	private final String TABLE_LO = "learning_objects";
+//	private final String TABLE_LO = "learning_objects";
+	private final String TABLE_LO = "learning_objects_test";
 	private final String TABLE_LO_ID = "id";
 	private final String TABLE_LO_CLUSTER_ID = "clusterId";
 	private final String TABLE_LO_TYPE = "type";
